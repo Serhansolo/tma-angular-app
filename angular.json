@@ -23,9 +23,14 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/vendor/semantic-ui/semantic.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "src/assets/vendor/semantic-ui/semantic.min.js",
+              "src/assets/scripts/init.js"
+            ]
           },
           "configurations": {
             "production": {

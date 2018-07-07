@@ -37,3 +37,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+resources/semantic-ui/
+
+src/assets/vendor/semantic-ui/semantic\.js
+
+src/assets/vendor/semantic-ui/semantic\.css
