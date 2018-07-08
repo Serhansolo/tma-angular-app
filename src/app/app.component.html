@@ -3,64 +3,88 @@
     <div class="row">
       <h1 class="ui header">Traffic Meister /w Angular 2+</h1>
     </div>
-    <div class="fourteen wide column">
-      <div class="ui three column stackable grid">
-        <div class="ui column">
-          <div class="ui segment">
-            <div class="ui form">
-              <div class="grouped fields">
-                <label>Choose your vehicle type</label>
-                <div class="field">
-                  <div class="ui radio checkbox">
-                    <input type="radio" name="vehicle_type" id="vehicle_type_none" checked="checked">
-                    <label for="vehicle_type_none">None</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ui column">
-          <div class="ui segment">
-            <div class="ui form">
-              <div class="grouped fields">
-                <label>Choose your vehicle brand</label>
-                <div class="field">
-                  <div class="ui radio checkbox">
-                    <input type="radio" name="vehicle_brand" id="vehicle_brand_none" checked="checked">
-                    <label for="vehicle_brand_none">None</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ui column">
-          <div class="ui segment">
-            <div class="ui form">
-              <div class="grouped fields">
-                <label>Choose your vehicle color</label>
-                <div class="field">
-                  <div class="ui radio checkbox">
-                    <input type="radio" name="vehicle_color" id="vehicle_color_none" checked="checked">
-                    <label for="vehicle_color_none">None</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="row">
+      <p>Our app is currently not yet accessible, sorry for this inconvenience</p>
     </div>
     <div class="fourteen wide column">
+      <form [formGroup]="filterGroup"
+            class="ui form">
+        <div class="ui four column stackable grid">
+          <div class="ui column">
+            <div class="ui segment">
+              <div class="grouped fields">
+                <label>Choose your vehicle type</label>
+                <div *ngFor="let type of types"
+                     class="field">
+                  <div class="ui radio checkbox">
+                    <input type="radio" name="vehicle_type" id="vehicle_type_{{type}}" [value]="type" formControlName="vehicle_type">
+                    <label for="vehicle_type_{{type}}">{{type | titlecase}}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui column">
+            <div class="ui segment">
+              <div class="ui form">
+                <div class="grouped fields">
+                  <label>Choose your vehicle brand</label>
+                  <div *ngFor="let brand of brands"
+                       class="field">
+                    <div class="ui radio checkbox">
+                      <input type="radio" name="vehicle_brand" id="vehicle_brand_{{brand}}" [value]="brand" formControlName="vehicle_brand">
+                      <label for="vehicle_brand_{{brand}}">{{brand | titlecase}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui column">
+            <div class="ui segment">
+              <div class="ui form">
+                <div class="grouped fields">
+                  <label>Choose your vehicle color</label>
+                  <div *ngFor="let color of colors"
+                       class="field">
+                    <div class="ui radio checkbox">
+                      <input type="radio" name="vehicle_color" id="vehicle_color_{{color}}" [value]="color" formControlName="vehicle_color">
+                      <label for="vehicle_color_{{color}}">{{color | titlecase}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui column">
+            <div class="ui {{(selectedColor === 'white') || (selectedColor ==='yellow') ? 'inverted' : ''}} center aligned segment">
+              <div class="ui tiny statistics">
+                <div class="ui {{(selectedColor === 'white') || (selectedColor ==='yellow') ? 'inverted ' + selectedColor : selectedColor}} statistic">
+                  <div class="value">
+                    {{selectedType === 'none' ? ('no type selected' | uppercase) : selectedType}}
+                  </div>
+                  <div class="label">
+                    {{selectedBrand === 'none' ? ('no brand selected' | uppercase) : selectedBrand}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div *ngIf="selectedType && selectedType !== 'none'" class="fourteen wide column">
       <div class="ui attached segments">
         <h2 class="ui top attached header">
           Your choice
         </h2>
         <div class="ui segment">
-          Segment right
+          <p>Please complete you selection</p>
         </div>
       </div>
+    </div>
+    <div class="row">
+      <p>Copyright 2018 Serhan Uygur</p>
     </div>
   </div>
 </div>
