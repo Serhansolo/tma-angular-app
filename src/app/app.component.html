@@ -22,6 +22,9 @@
                   </div>
                 </div>
               </div>
+              <button (click)="resetSelected(filterGroup.controls['vehicle_type'])" class="fluid ui primary button">
+                Reset
+              </button>
             </div>
           </div>
           <div class="ui column">
@@ -37,6 +40,9 @@
                     </div>
                   </div>
                 </div>
+                <button (click)="resetSelected(filterGroup.controls['vehicle_brand'])" class="fluid ui primary button">
+                  Reset
+                </button>
               </div>
             </div>
           </div>
@@ -53,18 +59,23 @@
                     </div>
                   </div>
                 </div>
+                <button (click)="resetSelected(filterGroup.controls['vehicle_color'])" class="fluid ui primary button">
+                  Reset
+                </button>
               </div>
             </div>
           </div>
           <div class="ui column">
             <div class="ui {{(selectedColor === 'white') || (selectedColor ==='yellow') ? 'inverted' : ''}} center aligned segment">
-              <div class="ui tiny statistics">
+              <p><b>Current selection:</b></p>
+              <div class="ui mini statistics">
                 <div class="ui {{(selectedColor === 'white') || (selectedColor ==='yellow') ? 'inverted ' + selectedColor : selectedColor}} statistic">
                   <div class="value">
-                    {{selectedType === 'none' ? ('no type selected' | uppercase) : selectedType}}
+                    {{selectedType === 'none' ? ('no type selected') : (selectedColor !== 'none') ? selectedColor + ' '
+                    + selectedType : selectedType}}
                   </div>
                   <div class="label">
-                    {{selectedBrand === 'none' ? ('no brand selected' | uppercase) : selectedBrand}}
+                    {{selectedBrand === 'none' ? ('no brand selected') : selectedBrand}}
                   </div>
                 </div>
               </div>
@@ -73,13 +84,15 @@
         </div>
       </form>
     </div>
-    <div *ngIf="selectedType && selectedType !== 'none'" class="fourteen wide column">
+    <div class="fourteen wide column">
       <div class="ui attached segments">
         <h2 class="ui top attached header">
           Your choice
         </h2>
         <div class="ui segment">
-          <p>Please complete you selection</p>
+          <p *ngIf="isNone(selectedType, selectedBrand, selectedColor)">Please complete you selection.</p>
+          <p *ngIf="!isNone(selectedType, selectedBrand, selectedColor)">You have selected a {{selectedColor}}
+            {{selectedType}}. The vehicle of your choice is: {{selectedBrand}}</p>
         </div>
       </div>
     </div>

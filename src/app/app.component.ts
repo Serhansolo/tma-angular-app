@@ -1,15 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DoCheck, IterableDiffers, OnInit} from '@angular/core';
 import {Vehicle} from './models/vehicle';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {Observable} from 'rxjs/index';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, DoCheck {
   // Mock Items
   vehicles: Vehicle[];
+
+  // Thing I need to diff array
+  iterableDiffer: IterableDiffers;
 
   // Create Formgroup for our vehicle filters
   filterGroup: FormGroup;
@@ -24,12 +28,13 @@ export class AppComponent implements OnInit {
   selectedBrand: string;
   selectedColor: string;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private _iterableDiffers: IterableDiffers) {
+    // this.iterableDiffer = this._iterableDiffers.find([]).create(null);
     this.vehicles = [
       new Vehicle(0, 'Bugatti Veyron', ['red', 'green', 'orange'], '', 'car'),
       new Vehicle(1, 'Boeing 787 Dreamliner', ['yellow', 'blue', 'orange'], '', 'airplane'),
       new Vehicle(2, 'Canadair North Star', ['black', 'yellow', 'blue', 'white', 'orange'], '', 'airplane'),
-      new Vehicle(3, 'USRA 0-6-6', ['black', 'orange', 'grey'], '', 'train'),
+      new Vehicle(3, 'USRA 0-6-6', ['black', 'grey', 'purple'], '', 'train'),
     ];
   }
 
@@ -39,10 +44,11 @@ export class AppComponent implements OnInit {
       'vehicle_brand': ['none'],
       'vehicle_color': ['none']
     });
-    this.selectedType = this.filterGroup.controls.vehicle_type.value;
-    this.selectedBrand = this.filterGroup.controls.vehicle_brand.value;
-    this.selectedColor = this.filterGroup.controls.vehicle_color.value;
-    this.makeLists();
+    this.selectedType = this.filterGroup.controls['vehicle_type'].value;
+    this.selectedBrand = this.filterGroup.controls['vehicle_brand'].value;
+    this.selectedColor = this.filterGroup.controls['vehicle_color'].value;
+    // console.log(this.selectedType);
+    this.makeLists(this.vehicles);
     this.onChanges();
   }
 
@@ -51,24 +57,39 @@ export class AppComponent implements OnInit {
       this.selectedType = formResults.vehicle_type;
       this.selectedBrand = formResults.vehicle_brand;
       this.selectedColor = formResults.vehicle_color;
-      console.log(formResults);
+
+      this.makeLists(this.filterDataList());
+
+      // console.log(this.filterGroup.controls);
+    });
+  }
+
+  ngDoCheck() {
+    // console.log(this.iterableDiffer.diff(this.));
+  }
+
+  filterDataList(): Vehicle[] {
+    return this.vehicles.filter((vehicle) => {
+      const colorCondition = (((vehicle.colors.filter((color) => color === this.selectedColor)).length > 0) || this.isNone(this.selectedColor));
+      const typeCondition = (vehicle.type === this.selectedType || this.isNone(this.selectedType));
+      const brandCondition = (vehicle.brand === this.selectedBrand || this.isNone(this.selectedBrand));
+
+      return typeCondition && brandCondition && colorCondition;
     });
   }
 
   /** Call listmaker for all the needed attributes.
    *  Clean the arrays by making every item unique. these arrays will populate the radiobuttons for the filter
    */
-  makeLists() {
-    this.types = this.listAttributes(this.vehicles, this.types, 'type');
-    this.brands = this.listAttributes(this.vehicles, this.brands, 'brand');
-    this.colors = this.listAttributes(this.vehicles, this.colors, 'colors');
-    console.log(this.types);
-    console.log(this.brands);
-    console.log(this.colors);
+  makeLists(vehicles: Vehicle[]) {
+    this.types = this.listAttributes(vehicles, this.types, 'type');
+    this.brands = this.listAttributes(vehicles, this.brands, 'brand');
+    this.colors = this.listAttributes(vehicles, this.colors, 'colors');
   }
 
   // Make lists form attributes of the Vehicle Array
   listAttributes(vehicleList: Vehicle[], attributeArray: any[], attribute: string): any[] {
+    attributeArray = [];
     vehicleList.forEach((vehicle: Vehicle) => {
       attributeArray.push(vehicle[attribute]);
     });
@@ -88,8 +109,27 @@ export class AppComponent implements OnInit {
     } else {
       tempArr = arr;
     }
-    tempArr.unshift('none'); // first item is always none for UX purposes
-
+    tempArr.sort();
+    tempArr.unshift('none'); // first item is always none if there is more then 1 item for UX purposes
     return tempArr.filter((item, itemIndex, me) => itemIndex === me.indexOf(item));
   }
+
+  isNone(value: string, ...anyOther: any[]): boolean { // TODO is called twice?
+    if (anyOther.length !== 0) {
+      anyOther.unshift(value);
+      for (let n = 0; n < anyOther.length; n++) {
+        if (anyOther[n] === 'none') {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return value === 'none';
+    }
+  }
+
+  resetSelected(formControl: FormControl): void {
+    formControl.setValue('none');
+  }
+
 }
