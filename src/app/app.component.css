@@ -4,3 +4,7 @@
 .ui.statistics {
   justify-content: center;
 }
+
+.ui.checkbox label {
+  cursor: pointer;
+}

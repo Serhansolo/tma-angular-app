@@ -1,10 +1,11 @@
 <div class="ui container">
   <div class="ui centered grid">
+    <loading-dimmer [loading]="vService.isLoading()"></loading-dimmer>
     <div class="row">
       <h1 class="ui header">Traffic Meister /w Angular 2+</h1>
     </div>
     <div class="row">
-      <p>Our app is currently not yet accessible, sorry for this inconvenience</p>
+      <p>Our app is currently not yet accessible for screen reader software, sorry for this inconvenience</p>
     </div>
     <div class="fourteen wide column">
       <form [formGroup]="filterGroup"
@@ -14,7 +15,7 @@
             <div class="ui segment">
               <div class="grouped fields">
                 <label>Choose your vehicle type</label>
-                <div *ngFor="let type of types"
+                <div *ngFor="let type of vService.getTypes()"
                      class="field">
                   <div class="ui radio checkbox">
                     <input type="radio" name="vehicle_type" id="vehicle_type_{{type}}" [value]="type" formControlName="vehicle_type">
@@ -32,7 +33,7 @@
               <div class="ui form">
                 <div class="grouped fields">
                   <label>Choose your vehicle brand</label>
-                  <div *ngFor="let brand of brands"
+                  <div *ngFor="let brand of vService.getBrands()"
                        class="field">
                     <div class="ui radio checkbox">
                       <input type="radio" name="vehicle_brand" id="vehicle_brand_{{brand}}" [value]="brand" formControlName="vehicle_brand">
@@ -51,7 +52,7 @@
               <div class="ui form">
                 <div class="grouped fields">
                   <label>Choose your vehicle color</label>
-                  <div *ngFor="let color of colors"
+                  <div *ngFor="let color of vService.getColors()"
                        class="field">
                     <div class="ui radio checkbox">
                       <input type="radio" name="vehicle_color" id="vehicle_color_{{color}}" [value]="color" formControlName="vehicle_color">
@@ -66,16 +67,17 @@
             </div>
           </div>
           <div class="ui column">
-            <div class="ui {{(selectedColor === 'white') || (selectedColor ==='yellow') ? 'inverted' : ''}} center aligned segment">
+            <div class="ui {{(selectedFilters.getColor() === 'white') || (selectedFilters.getColor() ==='yellow') ? 'inverted' : ''}} center aligned segment">
               <p><b>Current selection:</b></p>
               <div class="ui mini statistics">
-                <div class="ui {{(selectedColor === 'white') || (selectedColor ==='yellow') ? 'inverted ' + selectedColor : selectedColor}} statistic">
+                <div class="ui {{(selectedFilters.getColor() === 'white') || (selectedFilters.getColor() ==='yellow') ? 'inverted ' + selectedFilters.getColor() : selectedFilters.getColor()}} statistic">
                   <div class="value">
-                    {{selectedType === 'none' ? ('no type selected') : (selectedColor !== 'none') ? selectedColor + ' '
-                    + selectedType : selectedType}}
+                    {{(selectedFilters.isTypeEmpty()) ? ('no type selected') :
+                    !selectedFilters.isTypeEmpty() ? selectedFilters.getColor() + ' '
+                    + selectedFilters.getType() : selectedFilters.getType()}}
                   </div>
                   <div class="label">
-                    {{selectedBrand === 'none' ? ('no brand selected') : selectedBrand}}
+                    {{(selectedFilters.isBrandEmpty()) ? ('no brand selected') : selectedFilters.getBrand()}}
                   </div>
                 </div>
               </div>
@@ -86,13 +88,30 @@
     </div>
     <div class="fourteen wide column">
       <div class="ui attached segments">
-        <h2 class="ui top attached header">
-          Your choice
+        <h2 *ngIf="!selectedFilters.isEmpty()"
+            class="ui top centered attached header">
+          You have selected a {{selectedFilters.getColor()}} {{selectedFilters.getBrand()}}
         </h2>
-        <div class="ui segment">
-          <p *ngIf="isNone(selectedType, selectedBrand, selectedColor)">Please complete you selection.</p>
-          <p *ngIf="!isNone(selectedType, selectedBrand, selectedColor)">You have selected a {{selectedColor}}
-            {{selectedType}}. The vehicle of your choice is: {{selectedBrand}}</p>
+        <div class="ui {{selectedFilters.getColor()}} segment">
+          <p *ngIf="selectedFilters.isEmpty()">
+            Please complete you selection.</p>
+          <div *ngIf="!selectedFilters.isEmpty()">
+            <h3 class="ui center aligned icon header">
+              <i class="{{(selectedFilters.getType() === 'airplane') ? 'plane' : vService.getVehicleChoice().type}} {{selectedFilters.getColor()}} icon"></i>
+              <span class="content">
+                {{vService.getVehicleChoice().brand}}
+                <span class="sub header">{{selectedFilters.getColor()}} {{vService.getVehicleChoice().type}}</span>
+              </span>
+            </h3>
+            <div class="ui center aligned grid">
+              <div class="ui column">
+                <img class="ui large centered rounded image"
+                     style="opacity: 0.8;"
+                     src="{{vService.getVehicleChoice().img}}"
+                     title="{{vService.getVehicleChoice().brand}}">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
