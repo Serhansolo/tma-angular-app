@@ -1,13 +1,14 @@
+<loading-dimmer [loading]="vService.isLoading()"></loading-dimmer>
 <div class="ui container">
   <div class="ui centered grid">
-    <loading-dimmer [loading]="vService.isLoading()"></loading-dimmer>
-    <div class="row">
+    <div class="fourteen wide column">
       <h1 class="ui header">Traffic Meister /w Angular 2+</h1>
     </div>
-    <div class="row">
+    <div class="fourteen wide column">
       <p>Our app is currently not yet accessible for screen reader software, sorry for this inconvenience</p>
     </div>
-    <div class="fourteen wide column">
+    <app-error *ngIf="vService.error" [error]="vService.error"></app-error>
+    <div *ngIf="!vService.error && !vService.isLoading()" class="fourteen wide column">
       <form [formGroup]="filterGroup"
             class="ui form">
         <div class="ui four column stackable grid">
@@ -86,13 +87,13 @@
         </div>
       </form>
     </div>
-    <div class="fourteen wide column">
+    <div *ngIf="!vService.error && !vService.isLoading()" class="fourteen wide column">
       <div class="ui attached segments">
         <h2 *ngIf="!selectedFilters.isEmpty()"
             class="ui top centered attached header">
           You have selected a {{selectedFilters.getColor()}} {{selectedFilters.getBrand()}}
         </h2>
-        <div class="ui {{selectedFilters.getColor()}} segment">
+        <div class="ui {{selectedFilters.getColor()}} center aligned segment">
           <p *ngIf="selectedFilters.isEmpty()">
             Please complete you selection.</p>
           <div *ngIf="!selectedFilters.isEmpty()">

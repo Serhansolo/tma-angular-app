@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Vehicle} from './verhicle.model';
 import * as trafficMeister from '../../assets/tm-data/index.js';
-import {Observable, Observer} from 'rxjs/index';
+import {Observable} from 'rxjs/index';
+import {catchError} from 'rxjs/operators';
 import {FilterService} from './filter.service';
 
 @Injectable({
@@ -19,25 +20,75 @@ export class VehicleService {
   private brands: string[] = [];
   private colors: string[] = [];
 
+  // Sync data checker
+  private fetchError = false;
+  private _error = null;
+
   constructor(private selectedFilters: FilterService) {
     this._setLoading(true);
+    this.tryGettingVehicles();
+  }
 
-    this.getVehiclesObservable().subscribe((data) => {
-      this.setVehicles(data);
-      this.makeLists();
-      this._setLoading(false);
-    });
+  tryGettingVehicles(): void {
+    this._setFetchError(false);
+    const observable = this.getVehiclesObservable();
+    const subscription = observable
+      .subscribe(
+        (data) => {
+          console.log('data fetched');
+          this.setVehicles(data);
+          this.makeLists();
+        },
+        (err) => {
+          console.log(err);
+          this._setFetchError(true);
+          this._setLoading(false);
+          console.log('unsubscribing');
+          subscription.unsubscribe();
+        },
+        () => {
+          console.log('unsubscribing');
+          this._setLoading(false);
+          this._setFetchError(false);
+          subscription.unsubscribe();
+        }
+      );
   }
 
   getVehiclesObservable(): Observable<Vehicle[]> {
-    return new Observable((observer) => trafficMeister.fetchData((err, data) => {
-      console.log(err);
-      observer.next(data);
-    }));
+    return Observable.create((observer) => {
+        trafficMeister.fetchData((err, data) => {
+          if (err) {
+            observer.error(err);
+            this.error = err;
+            observer.complete();
+          } else {
+            observer.next(data);
+            observer.complete();
+          }
+        });
+      }
+    );
+  }
+
+  get error(): any {
+    return this._error;
+  }
+
+  set error(error: any) {
+    this._error = error;
   }
 
   private _setLoading(loading: boolean) {
     this.loading = loading;
+  }
+
+  private _setFetchError(failed: boolean) {
+    this.fetchError = failed;
+  }
+
+  isFetchError(): boolean {
+    return this.fetchError;
   }
 
   isLoading(): boolean {

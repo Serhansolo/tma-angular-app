@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'loading-dimmer',
@@ -6,7 +6,6 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./loading-dimmer.component.css']
 })
 export class LoadingDimmerComponent {
-
   @Input() loading = true;
 
   constructor() {}

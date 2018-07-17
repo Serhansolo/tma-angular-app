@@ -12,9 +12,7 @@ export class AppComponent implements OnInit {
   // Create Formgroup for our vehicle filters
   filterGroup: FormGroup;
 
-  constructor(private fb: FormBuilder, public vService: VehicleService, public selectedFilters: FilterService) {
-    console.log(this.selectedFilters);
-  }
+  constructor(private fb: FormBuilder, public vService: VehicleService, public selectedFilters: FilterService) {}
 
   ngOnInit() {
     this.filterGroup = this.fb.group({
@@ -27,13 +25,8 @@ export class AppComponent implements OnInit {
       brand: this.filterGroup.controls['vehicle_brand'].value,
       color: this.filterGroup.controls['vehicle_color'].value
     });
-    // console.log(this.selectedFilters);
     this.vService.updateSelectedFilters(this.selectedFilters);
-
     this.onChanges();
-    // this.vService.setSelectedType(this.filterGroup.controls['vehicle_type'].value);
-    // this.vService.setSelectedBrand(this.filterGroup.controls['vehicle_brand'].value);
-    // this.vService.setSelectedColor(this.filterGroup.controls['vehicle_color'].value);
   }
 
   onChanges(): void {
@@ -51,4 +44,6 @@ export class AppComponent implements OnInit {
   resetSelected(formControl: FormControl): void {
     formControl.setValue('');
   }
+
+
 }
