@@ -1,4 +1,4 @@
-<loading-dimmer [loading]="vService.isLoading()"></loading-dimmer>
+<loading-dimmer [loading]="vService.isLoading"></loading-dimmer>
 <div class="ui container">
   <div class="ui centered grid">
     <div class="fourteen wide column">
@@ -7,8 +7,8 @@
     <div class="fourteen wide column">
       <p>Our app is currently not yet accessible for screen reader software, sorry for this inconvenience</p>
     </div>
-    <app-error *ngIf="vService.error" [error]="vService.error"></app-error>
-    <div *ngIf="!vService.error && !vService.isLoading()" class="fourteen wide column">
+    <app-error *ngIf="vService.hasError" [error]="vService.hasError"></app-error>
+    <div *ngIf="!vService.hasError && !vService.isLoading" class="fourteen wide column">
       <form [formGroup]="filterGroup"
             class="ui form">
         <div class="ui four column stackable grid">
@@ -16,7 +16,7 @@
             <div class="ui segment">
               <div class="grouped fields">
                 <label>Choose your vehicle type</label>
-                <div *ngFor="let type of vService.getTypes()"
+                <div *ngFor="let type of vService.types"
                      class="field">
                   <div class="ui radio checkbox">
                     <input type="radio" name="vehicle_type" id="vehicle_type_{{type}}" [value]="type" formControlName="vehicle_type">
@@ -34,7 +34,7 @@
               <div class="ui form">
                 <div class="grouped fields">
                   <label>Choose your vehicle brand</label>
-                  <div *ngFor="let brand of vService.getBrands()"
+                  <div *ngFor="let brand of vService.brands"
                        class="field">
                     <div class="ui radio checkbox">
                       <input type="radio" name="vehicle_brand" id="vehicle_brand_{{brand}}" [value]="brand" formControlName="vehicle_brand">
@@ -53,7 +53,7 @@
               <div class="ui form">
                 <div class="grouped fields">
                   <label>Choose your vehicle color</label>
-                  <div *ngFor="let color of vService.getColors()"
+                  <div *ngFor="let color of vService.colors"
                        class="field">
                     <div class="ui radio checkbox">
                       <input type="radio" name="vehicle_color" id="vehicle_color_{{color}}" [value]="color" formControlName="vehicle_color">
@@ -68,17 +68,17 @@
             </div>
           </div>
           <div class="ui column">
-            <div class="ui {{(selectedFilters.getColor() === 'white') || (selectedFilters.getColor() ==='yellow') ? 'inverted' : ''}} center aligned segment">
+            <div class="ui {{(selectedFilters.color === 'white') || (selectedFilters.color ==='yellow') ? 'inverted' : ''}} center aligned segment">
               <p><b>Current selection:</b></p>
               <div class="ui mini statistics">
-                <div class="ui {{(selectedFilters.getColor() === 'white') || (selectedFilters.getColor() ==='yellow') ? 'inverted ' + selectedFilters.getColor() : selectedFilters.getColor()}} statistic">
+                <div class="ui {{(selectedFilters.color === 'white') || (selectedFilters.color ==='yellow') ? 'inverted ' + selectedFilters.color : selectedFilters.color}} statistic">
                   <div class="value">
-                    {{(selectedFilters.isTypeEmpty()) ? ('no type selected') :
-                    !selectedFilters.isTypeEmpty() ? selectedFilters.getColor() + ' '
-                    + selectedFilters.getType() : selectedFilters.getType()}}
+                    {{(selectedFilters.isTypeEmpty) ? ('no type selected') :
+                    !selectedFilters.isTypeEmpty ? selectedFilters.color + ' '
+                    + selectedFilters.type : selectedFilters.type}}
                   </div>
                   <div class="label">
-                    {{(selectedFilters.isBrandEmpty()) ? ('no brand selected') : selectedFilters.getBrand()}}
+                    {{(selectedFilters.isBrandEmpty) ? ('no brand selected') : selectedFilters.brand}}
                   </div>
                 </div>
               </div>
@@ -87,29 +87,29 @@
         </div>
       </form>
     </div>
-    <div *ngIf="!vService.error && !vService.isLoading()" class="fourteen wide column">
+    <div *ngIf="!vService.hasError && !vService.isLoading" class="fourteen wide column">
       <div class="ui attached segments">
-        <h2 *ngIf="!selectedFilters.isEmpty()"
+        <h2 *ngIf="!selectedFilters.isEmpty"
             class="ui top centered attached header">
-          You have selected a {{selectedFilters.getColor()}} {{selectedFilters.getBrand()}}
+          You have selected a {{selectedFilters.color}} {{selectedFilters.brand}}
         </h2>
-        <div class="ui {{selectedFilters.getColor()}} center aligned segment">
-          <p *ngIf="selectedFilters.isEmpty()">
+        <div class="ui {{selectedFilters.color}} center aligned segment">
+          <p *ngIf="selectedFilters.isEmpty">
             Please complete you selection.</p>
-          <div *ngIf="!selectedFilters.isEmpty()">
+          <div *ngIf="!selectedFilters.isEmpty">
             <h3 class="ui center aligned icon header">
-              <i class="{{(selectedFilters.getType() === 'airplane') ? 'plane' : vService.getVehicleChoice().type}} {{selectedFilters.getColor()}} icon"></i>
+              <i class="{{(selectedFilters.type === 'airplane') ? 'plane' : vService.vehicleChoice.type}} {{selectedFilters.color}} icon"></i>
               <span class="content">
-                {{vService.getVehicleChoice().brand}}
-                <span class="sub header">{{selectedFilters.getColor()}} {{vService.getVehicleChoice().type}}</span>
+                {{vService.vehicleChoice.brand}}
+                <span class="sub header">{{selectedFilters.color}} {{vService.vehicleChoice.type}}</span>
               </span>
             </h3>
             <div class="ui center aligned grid">
               <div class="ui column">
                 <img class="ui large centered rounded image"
                      style="opacity: 0.8;"
-                     src="{{vService.getVehicleChoice().img}}"
-                     title="{{vService.getVehicleChoice().brand}}">
+                     src="{{vService.vehicleChoice.img}}"
+                     title="{{vService.vehicleChoice.brand}}">
               </div>
             </div>
           </div>

@@ -1,47 +1,49 @@
 import {Injectable} from '@angular/core';
 import {IFilter} from './filter';
 
+// This service is just a collection of parameters being set with the help of an interface.
+// I find using this technique easy because I only have to set the filters in one place and share that information.
+// Everything in here seems pretty self explanatory to me.
 @Injectable({
   providedIn: 'root'
 })
 export class FilterService {
-  private type: string;
-  private brand: string;
-  private color: string;
+  private _filter: IFilter;
 
-  constructor() { }
-
-  getType(): string {
-    return this.type;
+  // Getter, Setters, Issers & Hassers
+  get type(): IFilter['type'] {
+    return this._filter.type;
   }
 
-  getBrand(): string {
-    return this.brand;
+  get brand(): IFilter['brand'] {
+    return this._filter.brand;
   }
 
-  getColor(): string {
-    return this.color;
+  get color(): IFilter['color'] {
+    return this._filter.color;
   }
 
-  isEmpty(): boolean {
-    return (this.type === '' || this.color === '' || this.brand === '');
+  get isEmpty(): boolean {
+    return (this._filter.type === '' || this._filter.color === '' || this._filter.brand === '');
   }
 
-  isTypeEmpty(): boolean {
-    return (this.type === '');
+  get isTypeEmpty(): boolean {
+    return (this._filter.type === '');
   }
 
-  isBrandEmpty(): boolean {
-    return (this.brand === '');
+  get isBrandEmpty(): boolean {
+    return (this._filter.brand === '');
   }
 
-  isColorEmpty(): boolean {
-    return (this.color === '');
+  get isColorEmpty(): boolean {
+    return (this._filter.color === '');
   }
 
-  setFilters(filter: IFilter) {
-    this.type = filter.type;
-    this.brand = filter.brand;
-    this.color = filter.color;
+  set filters(filter: IFilter) {
+    this._filter = filter;
+  }
+
+  get filters(): IFilter {
+    return this._filter;
   }
 }
