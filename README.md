@@ -1,27 +1,24 @@
-# TmaAngularApp
+# TMA Angular App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+This app was written as a Development Case to judge ones knowledge of Frontend Development. Challenge your mind to learn more and more as your career progresses. The ultimate goals of oneself should be reaching professional heights and discovering your boundaries over and over again.
 
-## Development server
+## Now lets get to the good stuff...
+### Running the dev server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+This is pretty straight forward since the defaults of `ng new` have not been altered. Just run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+### Building the whole thing
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+As mentioned before, these also run by using the defaults of Angular. Simply run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-## Build
+**Github Pages**
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Since this app is deployable out of the box the Github Pages were used for convenience. To be able to add your fork of the project on Github Pages just npm install the angular-cli-ghpages package. Instructions on how to do so can be found [here](https://github.com/angular-schule/angular-cli-ghpages).
 
-## Running unit tests
+### Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). The CLI should automatically launch the browser with the results if it doesn't head over to `http://localhost:9876/` to see the results.
 
-## Running end-to-end tests
+### Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+No e2e tests were written (yet).
