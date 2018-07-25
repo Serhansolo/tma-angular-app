@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {VehicleService} from './service/vehicle.service';
-import {FilterService} from './service/filter.service';
+import {VehicleService} from './vehicle/vehicle.service';
+import {FilterService} from './filter/filter.service';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +10,10 @@ import {FilterService} from './service/filter.service';
 })
 export class AppComponent implements OnInit {
   // Create Form Group for our vehicle filters
-  private _filterGroup: FormGroup;
+  filterGroup: FormGroup;
 
   // Inject the dependencies to help serve the greater good of this simple but pretty app.
-  constructor(private fb: FormBuilder, public vService: VehicleService, public selectedFilters: FilterService) {}
+  constructor(private fb: FormBuilder, public vService: VehicleService, public sfService: FilterService) {}
 
   // On init we initiate the Form Controls in the form group via the Formbuilder.
   ngOnInit() {
@@ -23,20 +23,20 @@ export class AppComponent implements OnInit {
       'vehicle_color': ['']
     });
     // We also set the newly initiated control values inside the Filter Service
-    this.selectedFilters.filters = {
+    this.sfService.filters = {
       type: this.filterGroup.controls['vehicle_type'].value,
       brand: this.filterGroup.controls['vehicle_brand'].value,
       color: this.filterGroup.controls['vehicle_color'].value
     };
     // Call onChanges to subscribe to the Form Group value changes observable
-    this.onChanges();
+    this.trackChanges();
   }
 
   // Track changes by subscribing the the valueChanges Observable and reset filters whenever a change is triggered
-  onChanges(): void {
+  private trackChanges(): void {
     this.filterGroup.valueChanges.subscribe((formResults) => {
 
-      this.selectedFilters.filters = {
+      this.sfService.filters = {
         type: formResults.vehicle_type,
         brand: formResults.vehicle_brand,
         color: formResults.vehicle_color
@@ -54,15 +54,6 @@ export class AppComponent implements OnInit {
   // inside the Form Controls.
   resetSelected(formControl: FormControl): void {
     formControl.setValue('');
-  }
-
-  // Getter, Setters, Issers & Hassers
-  get filterGroup(): FormGroup {
-    return this._filterGroup;
-  }
-
-  set filterGroup(newFilterGroup: FormGroup) {
-    this._filterGroup = newFilterGroup;
   }
 
 }

@@ -1,7 +1,6 @@
 // Test Helpers for the service tests
 import {inject, TestBed} from '@angular/core/testing';
-import {FilterService} from '../../service/filter.service';
-
+import {FilterService} from './filter.service';
 
 describe('FilterService', () => {
   beforeEach(() => {
@@ -35,7 +34,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isEmpty).toBe(true);
+      expect(filterService.isFilterEmpty()).toBeTruthy();
     }));
 
   it('can check for any empty filter values',
@@ -48,7 +47,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isEmpty).toBe(true);
+      expect(filterService.isFilterEmpty()).toBeTruthy();
     }));
 
   it('can check for not empty filter values',
@@ -61,7 +60,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isEmpty).toBe(false);
+      expect(filterService.isFilterEmpty()).toBeFalsy();
     }));
 
   it('can check for empty TYPE value',
@@ -72,7 +71,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isTypeEmpty).toBe(true);
+      expect(filterService.isTypeEmpty()).toBeTruthy();
     }));
 
   it('can check for not empty TYPE value',
@@ -83,7 +82,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isTypeEmpty).toBe(false);
+      expect(filterService.isTypeEmpty()).toBeFalsy();
     }));
 
   it('can check for empty TYPE value',
@@ -94,7 +93,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isColorEmpty).toBe(true);
+      expect(filterService.isColorEmpty()).toBeTruthy();
     }));
 
   it('can check for not empty COLOR value',
@@ -105,7 +104,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isColorEmpty).toBe(false);
+      expect(filterService.isColorEmpty()).toBeFalsy();
     }));
 
   it('can check for empty BRAND value',
@@ -116,7 +115,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isBrandEmpty).toBe(true);
+      expect(filterService.isBrandEmpty()).toBeTruthy();
     }));
 
   it('can check for not empty BRAND value',
@@ -127,7 +126,7 @@ describe('FilterService', () => {
 
       filterService.filters = filter;
 
-      expect(filterService.isBrandEmpty).toBe(false);
+      expect(filterService.isBrandEmpty()).toBeFalsy();
     }));
 
 

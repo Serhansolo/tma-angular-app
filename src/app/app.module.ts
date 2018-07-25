@@ -9,10 +9,10 @@ import {AppComponent} from './app.component';
 
 // App Dependent components and Services
 // The Vehicle Service is responsible for most of the data logic.
-import {VehicleService} from './service/vehicle.service';
+import {VehicleService} from './vehicle/vehicle.service';
 // The filter Service keeps track of the selected filters.
 // I thought it was too much of a burden to saddle up the Vehicle service with this
-import {FilterService} from './service/filter.service';
+import {FilterService} from './filter/filter.service';
 
 // Loading dimmer Component just tracks if the app is being loaded initially.
 import {LoadingDimmerComponent} from './loading-dimmer/loading-dimmer.component';
@@ -27,14 +27,16 @@ import {ErrorComponent} from './error/error.component';
   ],
   imports: [
     BrowserModule,
-    ReactiveFormsModule // I find reactive forms working easier then the FormsModule.
+    // I prefer using ReactiveFormsModule over  working with the FormsModule. because I find it give a little cleaner HTML
+    ReactiveFormsModule
   ],
   providers: [
-    FormBuilder, // using a formbuilder to initiate and take control of form elements.
-    VehicleService, // Cuz I need it everywhere
-    FilterService // Same goes for this Service
+    // using a FormBuilder to initiate and take control of form elements.
+    FormBuilder,
+    VehicleService,
+    FilterService
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

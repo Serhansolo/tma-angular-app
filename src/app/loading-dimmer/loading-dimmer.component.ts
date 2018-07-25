@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
-  selector: 'loading-dimmer',
+  selector: 'app-loading-dimmer',
   templateUrl: './loading-dimmer.component.html',
   styleUrls: ['./loading-dimmer.component.css']
 })

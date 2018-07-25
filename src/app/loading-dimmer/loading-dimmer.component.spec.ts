@@ -1,25 +1,16 @@
 import {Component} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {LoadingDimmerComponent} from '../../loading-dimmer/loading-dimmer.component';
+import {LoadingDimmerComponent} from './loading-dimmer.component';
 
 // create Host Component to load the dimmer in.
 @Component({
   template: `
-    <loading-dimmer
+    <app-loading-dimmer
       [loading]="loading">
-    </loading-dimmer>`
+    </app-loading-dimmer>`
 })
 class TestHostComponent {
-
-  private _loading = true;
-
-  set loading(loading: boolean) {
-    this._loading = loading;
-  }
-
-  get loading() {
-    return this._loading;
-  }
+  loading = true;
 }
 
 describe('LoadingDimmerComponent', () => {
@@ -35,7 +26,7 @@ describe('LoadingDimmerComponent', () => {
     // create TestHostComponent instead of DashboardHeroComponent
     fixture = TestBed.createComponent(TestHostComponent);
     testHost = fixture.componentInstance;
-    hostElement = fixture.nativeElement.querySelectorAll('loading-dimmer');
+    hostElement = fixture.nativeElement.querySelectorAll('app-loading-dimmer');
     fixture.detectChanges(); // trigger initial data binding
   });
 

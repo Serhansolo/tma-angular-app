@@ -1,4 +1,4 @@
-<loading-dimmer [loading]="vService.isLoading"></loading-dimmer>
+<app-loading-dimmer [loading]="vService.isLoading()"></app-loading-dimmer>
 <div class="ui container">
   <div class="ui centered grid">
     <div class="fourteen wide column">
@@ -7,8 +7,8 @@
     <div class="fourteen wide column">
       <p>Our app is currently not yet accessible for screen reader software, sorry for this inconvenience</p>
     </div>
-    <app-error *ngIf="vService.hasError" [error]="vService.hasError"></app-error>
-    <div *ngIf="!vService.hasError && !vService.isLoading" class="fourteen wide column">
+    <app-error *ngIf="vService.hasError()" [error]="vService.hasError()"></app-error>
+    <div *ngIf="!vService.hasError() && !vService.isLoading()" class="fourteen wide column">
       <form [formGroup]="filterGroup"
             class="ui form">
         <div class="ui four column stackable grid">
@@ -68,17 +68,17 @@
             </div>
           </div>
           <div class="ui column">
-            <div class="ui {{(selectedFilters.color === 'white') || (selectedFilters.color ==='yellow') ? 'inverted' : ''}} center aligned segment">
+            <div class="ui {{(sfService.filters.color === 'white') || (sfService.filters.color ==='yellow') ? 'inverted' : ''}} center aligned segment">
               <p><b>Current selection:</b></p>
               <div class="ui mini statistics">
-                <div class="ui {{(selectedFilters.color === 'white') || (selectedFilters.color ==='yellow') ? 'inverted ' + selectedFilters.color : selectedFilters.color}} statistic">
+                <div class="ui {{(sfService.filters.color === 'white') || (sfService.filters.color ==='yellow') ? 'inverted ' + sfService.filters.color : sfService.filters.color}} statistic">
                   <div class="value">
-                    {{(selectedFilters.isTypeEmpty) ? ('no type selected') :
-                    !selectedFilters.isTypeEmpty ? selectedFilters.color + ' '
-                    + selectedFilters.type : selectedFilters.type}}
+                    {{(sfService.isTypeEmpty()) ? ('no type selected') :
+                    !sfService.isTypeEmpty() ? sfService.filters.color + ' '
+                    + sfService.filters.type : sfService.filters.type}}
                   </div>
                   <div class="label">
-                    {{(selectedFilters.isBrandEmpty) ? ('no brand selected') : selectedFilters.brand}}
+                    {{(sfService.isBrandEmpty()) ? ('no brand selected') : sfService.filters.brand}}
                   </div>
                 </div>
               </div>
@@ -87,21 +87,21 @@
         </div>
       </form>
     </div>
-    <div *ngIf="!vService.hasError && !vService.isLoading" class="fourteen wide column">
+    <div *ngIf="!vService.hasError() && !vService.isLoading()" class="fourteen wide column">
       <div class="ui attached segments">
-        <h2 *ngIf="!selectedFilters.isEmpty"
+        <h2 *ngIf="!sfService.isFilterEmpty()"
             class="ui top centered attached header">
-          You have selected a {{selectedFilters.color}} {{selectedFilters.brand}}
+          You have selected a {{sfService.filters.color}} {{sfService.filters.brand}}
         </h2>
-        <div class="ui {{selectedFilters.color}} center aligned segment">
-          <p *ngIf="selectedFilters.isEmpty">
+        <div class="ui {{sfService.filters.color}} center aligned segment">
+          <p *ngIf="sfService.isFilterEmpty()">
             Please complete you selection.</p>
-          <div *ngIf="!selectedFilters.isEmpty">
+          <div *ngIf="!sfService.isFilterEmpty()">
             <h3 class="ui center aligned icon header">
-              <i class="{{(selectedFilters.type === 'airplane') ? 'plane' : vService.vehicleChoice.type}} {{selectedFilters.color}} icon"></i>
+              <i class="{{(sfService.filters.type === 'airplane') ? 'plane' : vService.vehicleChoice.type}} {{sfService.filters.color}} icon"></i>
               <span class="content">
                 {{vService.vehicleChoice.brand}}
-                <span class="sub header">{{selectedFilters.color}} {{vService.vehicleChoice.type}}</span>
+                <span class="sub header">{{sfService.filters.color}} {{vService.vehicleChoice.type}}</span>
               </span>
             </h3>
             <div class="ui center aligned grid">
