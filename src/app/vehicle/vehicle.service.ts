@@ -3,35 +3,75 @@ import {Vehicle} from './verhicle.model';
 import * as trafficMeister from '../../assets/tm-data/index.js';
 import {Observable} from 'rxjs/index';
 import {FilterService} from '../filter/filter.service';
-
+/**
+ * The Vehicle Service is responsible for most of the data logic.
+ * It gets the data, it's also the job of the Service to keep track of the data and do some logic thing on them
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class VehicleService {
-
-  // a Container of Vehicles
+  /**
+   * A Container of Vehicles
+   * @type {Array}
+   */
   vehicles: Vehicle[] = [];
-  // The chosen vehicle. This is being initiated once all Filter fields are filled.
+  /**
+   * The chosen vehicle. This variable is being set once all Filter fields are filled.
+   * @type {Vehicle}
+   */
   vehicleChoice: Vehicle;
 
-  // Make lists to use in app, also initialize them directly
+  /**
+   * List of all unique types for the filter.
+   * @ignore
+   */
   private types: string[] = [];
+  /**
+   * List of all unique types for the filter.
+   * @ignore
+   */
   private brands: string[] = [];
+
+  /**
+   * List of all unique brands for the filter.
+   * @ignore
+   */
   private colors: string[] = [];
 
-  // Some self explanatory vars for the datafetcher
+  /**
+   * Error variable to keep track of the errors
+   * @ignore
+   */
   private error = null;
+  /**
+   * Variable to keep track of the loading 'state'
+   * @ignore
+   */
   private loading = true;
+  /**
+   * Variable to keep track of the total number of attempts to reconnect after an error
+   * @ignore
+   */
   private attempt = 0;
+  /**
+   * Variable to set the maximum number of attempts
+   * @ignore
+   */
   private maxAttempts = 3;
 
-  // Doing some initting and fetching the data right away.
-  constructor(private selectedFilters: FilterService) {
+  /**
+   * Construct with injecting the FilterService and try to get the vehicles from the data source right away.
+   * @param sfService inject the Filter Service to be up to date with the changed filters
+   */
+  constructor(private sfService: FilterService) {
     this.tryGettingVehicles();
   }
 
-  // I find it the job of a service to collect data  and catch errors if they occur
-  // If it does get the data, its also the job of the Service to keep track of the data and do some logic thing on them
+  /**
+   * Try getting the vehicles from the Data source, since this is an Observable we can conveniently subscribe to it and
+   * do some stuff on the next(), err() and complete() methods.
+   */
   tryGettingVehicles(): void {
     // get the subscription so we can unsubscribe when we are done.
     const subscription = this.getVehiclesObservable()
@@ -46,7 +86,7 @@ export class VehicleService {
         },
         // Sometimes shit happens, try to be aware of that fact.
         (err) => {
-          if (this.trying()) {
+          if (this.canTry()) {
             this.tryGettingVehicles();
             this.raiseAttempts();
           } else {
@@ -62,15 +102,16 @@ export class VehicleService {
       );
   }
 
-  // Call the List Maker to create the filterable Lists
-  // The list Maker cleans the arrays by making every item unique. these arrays will populate the Radio Buttons
-  // for the filter this function is also called when the filters are changed, if the result of the change
-  // is one item  then that's the selected item.
+  /**
+   * The 'List Maker' cleans the arrays by making every item unique. these arrays will populate the Radio Buttons
+   * for the filter this function is also called when the filters are changed, if the result of the change
+   * is one item  then that's the selected item.
+   */
   makeLists() {
     this.types = this.listAttributes(this.filterDataList(), this.types, 'type');
     this.brands = this.listAttributes(this.filterDataList(), this.brands, 'brand');
     this.colors = this.listAttributes(this.filterDataList(), this.colors, 'colors');
-    // console.log(this.filterDataList().length);
+
     if (this.filterDataList().length === 1) {
       this.filterDataList().map(vehicle => this.vehicleChoice = vehicle);
     } else {
@@ -78,10 +119,15 @@ export class VehicleService {
     }
   }
 
-  // Make the lists and return a string array with the values that will populate the Radio Buttons
-  // @Param vehicleList: a list of vehicle object to iterate through whilst getting the values for the list
-  // @Param attributeArray: A list of strings to hold the values for the Radio Buttons.
-  // @Param attribute: A selector for the key that will be used to get the items for the attributeArray
+
+  /**
+   * Make the lists and return a string array with the values that will populate the Radio Buttons
+   *
+   * @Param vehicleList: a list of vehicle object to iterate through whilst getting the values for the list
+   * @Param attributeArray: A list of strings to hold the values for the Radio Buttons.
+   * @Param attribute: A selector for the key that will be used to get the items for the attributeArray
+   * @returns {string[]}
+   */
   listAttributes(vehicleList: Vehicle[], attributeArray: string[], attribute: string): string[] {
     attributeArray = [];
     // Iterate through the object and push the items to the array.
@@ -92,17 +138,23 @@ export class VehicleService {
     return this.cleanDuplicates(attributeArray);
   }
 
-  // Just a method to filter the main vehicles array according to the parameter that were chosen in the filters
+  /**
+   * Just a method to filter the main vehicles array according to the parameter that were chosen in the filters
+   */
   filterDataList(): Vehicle[] {
     return this.vehicles.filter((vehicle: Vehicle) => {
-      const typeCondition = vehicle.type === this.selectedFilters.filters.type || this.selectedFilters.isTypeEmpty();
-      const brandCondition = vehicle.brand === this.selectedFilters.filters.brand || this.selectedFilters.isBrandEmpty();
-      const colorCondition = vehicle.colors.filter((color) => color === this.selectedFilters.filters.color).length > 0 || this.selectedFilters.isColorEmpty();
+      const typeCondition = vehicle.type === this.sfService.filters.type || this.sfService.isTypeEmpty();
+      const brandCondition = vehicle.brand === this.sfService.filters.brand || this.sfService.isBrandEmpty();
+      const colorCondition = vehicle.colors.filter((color) => color === this.sfService.filters.color).length > 0 || this.sfService.isColorEmpty();
       return typeCondition && brandCondition && colorCondition;
     });
   }
 
-  // Clean duplicates in the lists with Array.filter and sort them alphabetically at the end, a little UX friendlier
+  /**
+   * Clean duplicates in the lists with Array.filter and sort them alphabetically at the end, a little UX friendlier.
+   * @param arr Provided array to clean dublicates.
+   * @returns {any[]}
+   */
   cleanDuplicates(arr: any[]): any[] {
     let tempArr = [];
     if (Array.isArray(arr[0])) {
@@ -118,7 +170,12 @@ export class VehicleService {
     return tempArr.filter((item, itemIndex, me) => itemIndex === me.indexOf(item));
   }
 
-  // get the vehicleObservable
+  /**
+   * Get the vehicleObservable to subscribe on. This method creates and Observabble, fetches the data, waits for
+   * the callback function to react and then reply accordingly by nexting or erroring
+   *
+   * @returns {Observable<Vehicle[]>}
+   */
   getVehiclesObservable(): Observable<Vehicle[]> {
     // Since the data API is a callback API I create an observable attach the observer to it and call next on it
     // when the data from the callback function is returned. Otherwise I throw an error that is being checked for
@@ -135,19 +192,35 @@ export class VehicleService {
     });
   }
 
+  /**
+   * This function return an error of any type so the outside world can read it an act accordingly
+   * @returns {any}
+   */
   hasError(): any {
     return this.error;
   }
 
+  /**
+   * This function returns the loading boolean 'state'
+   * @returns {boolean}
+   */
   isLoading(): boolean {
     return this.loading;
   }
 
-  trying(): boolean {
+  /**
+   * this function returns a boolean check to see if we can try again or the maximum atempts are reached.
+   * @ignore
+   */
+  private canTry(): boolean {
     return this.attempt !== this.maxAttempts;
   }
 
-  raiseAttempts(): void {
+  /**
+   * This function raises the attemptnumber when a try fails.
+   * @ignore
+   */
+  private raiseAttempts(): void {
     this.attempt++;
   }
 }

@@ -26,9 +26,7 @@
               "src/assets/vendor/semantic-ui/semantic.min.css",
               "src/styles.css"
             ],
-            "scripts": [
-              "src/assets/vendor/semantic-ui/semantic.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {

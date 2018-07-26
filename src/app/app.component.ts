@@ -2,7 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {VehicleService} from './vehicle/vehicle.service';
 import {FilterService} from './filter/filter.service';
-
+/**
+ * @ignore
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
